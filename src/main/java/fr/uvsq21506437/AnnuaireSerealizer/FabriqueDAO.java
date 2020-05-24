@@ -4,8 +4,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.time.LocalDate;
-import java.util.HashMap;
 
 public class FabriqueDAO {
 	public Connection connect = null;
@@ -48,6 +46,10 @@ public class FabriqueDAO {
 	public void CreateClassGroupe() {
 		try (Statement stmt = this.connect.createStatement()) {
 			stmt.executeUpdate("CREATE TABLE Groupe ("
+					+ "nom1 VARCHAR(100),"
+					+ "nom2 VARCHAR(100),"
+					+ "fonction VARCHAR(100),"
+					+ "PRIMARY KEY(nom1, nom2)"
 					+ ")");
 		}catch (SQLException e) {
 			e.printStackTrace();

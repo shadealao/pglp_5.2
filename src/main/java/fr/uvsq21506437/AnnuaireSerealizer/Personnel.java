@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -128,8 +130,23 @@ public final class Personnel extends DAO<Groupe> implements Groupe , Iterable{
 	@Override
 	public Groupe create(Groupe obj) {
 		liste.add(obj);
-		//this.serealizerobjet(obj);
+		/*try {
+			Object db;
+			PreparedStatement prepare = db.connect.prepareStatement("INSERT INTO Personel"
+					+ " VALUES(?,?,?,?)");
+			prepare.setString(1, obj.getNom());
+			prepare.setInt(2, obj.getPoint().getX());
+			prepare.setInt(3, obj.getPoint().getY());
+			prepare.setDouble(4, obj.getCote());
+			int result = prepare.executeUpdate();
+			assert result == 1;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		*/
 		return obj;
+		
+		
 	}
 
 	@Override
@@ -140,10 +157,14 @@ public final class Personnel extends DAO<Groupe> implements Groupe , Iterable{
 	@Override
 	public void delete(Groupe obj) {
 		liste.remove(obj);
-		final String chemin = System.getProperty("user.dir") + "\\" + obj.getNom() + ".ser";
-		//ObjectInputStream reader = null;
-		File file = new File(chemin);
-		file.delete();
+		try {
+			PreparedStatement prepare = db.connect.prepareStatement("DELETE FROM Personnel WHERE nom = ?");
+			prepare.setString(1, obj.getNom());
+			prepare.executeUpdate();
+			obj = null;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -154,6 +175,15 @@ public final class Personnel extends DAO<Groupe> implements Groupe , Iterable{
 			}
 		}
 		Groupe grp =null; 
+		
+		try {
+			PreparedStatement prepare = db.connect.prepareStatement("SELECT * FROM Personnel WHERE nom = ?");
+			prepare.setString(1, nom);
+			prepare.executeUpdate();
+			grp = new Groupe();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		return grp;
 	}
 
